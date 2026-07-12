@@ -12,7 +12,8 @@ public class Universal : MonoBehaviour
     public float timeDelay = 1.0f;
     private float timeElapsed = 0.0f;
     public int totalEnemy = 10;
-    private int enemyCount = 0;
+
+    public int enemyCount = 0;
 
     void Start()
     {

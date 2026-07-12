@@ -7,11 +7,13 @@ public class Player : MonoBehaviour
     public float rotSensitivity = 1.0f;
     private float xRot = 0.0f;
     InputAction moveAction;
+
     [Header("Projectile")]
-    public float projectileSpeed = 10.0f;
     public GameObject projectilePrefab;
     InputAction fireAction;
+    public float firingPeriod = 1.0f;
     private float elapsedTime = 0.0f;
+    public Transform projectileSpawner;
     void Start()
     {
         moveAction = InputSystem.actions.FindAction("Move");
@@ -28,6 +30,10 @@ public class Player : MonoBehaviour
     {
         RotatePlayer();
     }
+    private void Update()
+    {
+        SpawnProjectile();
+    }
     void RotatePlayer()
     {
         xRot -= moveAction.ReadValue<Vector2>().x * rotSensitivity;
@@ -37,7 +43,12 @@ public class Player : MonoBehaviour
     {
         if (fireAction.IsInProgress())
         {
-
+            elapsedTime += Time.deltaTime;
+            if (elapsedTime > firingPeriod)
+            {
+                Instantiate(projectilePrefab, projectileSpawner.position, Quaternion.identity);
+                elapsedTime = 0.0f;
+            }
         }
     }
 }
