@@ -1,15 +1,19 @@
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class Universal : MonoBehaviour
 {
+    [Header("Enemy Control")]
     public Transform player;
     public GameObject enemyPrefab;
     public Vector2 innerBoundary;
     public float boundaryThickness = 3.0f;
     private Vector2 outerBoundary;
-    private Vector2 enemySpawnLocation;
     public float timeDelay = 1.0f;
     private float timeElapsed = 0.0f;
+    public int totalEnemy = 10;
+    private int enemyCount = 0;
+
     void Start()
     {
         outerBoundary.x = innerBoundary.x + boundaryThickness;
@@ -20,9 +24,10 @@ public class Universal : MonoBehaviour
     {
         
         timeElapsed += Time.deltaTime;
-        if (timeElapsed > timeDelay)
+        if (timeElapsed > timeDelay && enemyCount <= totalEnemy)
         {
             SpawnEnemy(enemyPrefab, innerBoundary, outerBoundary);
+            enemyCount++;
             timeElapsed = 0.0f;
         }
     }
