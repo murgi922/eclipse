@@ -16,8 +16,6 @@ public class Projectile : MonoBehaviour
         player = playerObject.GetComponent<Transform>();
         initialDirection = player.up;
     }
-
-    // Update is called once per frame
     void Update()
     {
         transform.position += Time.deltaTime * projectileSpeed * 10f * initialDirection;
