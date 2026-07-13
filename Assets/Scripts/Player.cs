@@ -41,9 +41,9 @@ public class Player : MonoBehaviour
     }
     void SpawnProjectile()
     {
+        if (elapsedTime <= firingPeriod) elapsedTime += Time.deltaTime;
         if (fireAction.IsInProgress())
         {
-            elapsedTime += Time.deltaTime;
             if (elapsedTime > firingPeriod)
             {
                 Instantiate(projectilePrefab, projectileSpawner.position, Quaternion.identity);

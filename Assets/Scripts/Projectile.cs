@@ -27,6 +27,7 @@ public class Projectile : MonoBehaviour
     {
         Destroy(collision.gameObject);
         universalScript.enemyCount--;
+        universalScript.deSpawnedEnemy++;
         Destroy(this.gameObject);
     }
 }
