@@ -24,8 +24,6 @@ public class Player : MonoBehaviour
         if (fireAction != null) fireAction.Enable();
         else Debug.LogError("Action Attack could not be found");
     }
-
-    // Update is called once per frame
     void FixedUpdate()
     {
         RotatePlayer();
