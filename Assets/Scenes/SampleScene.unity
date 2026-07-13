@@ -168,7 +168,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   rotSensitivity: 5
   projectilePrefab: {fileID: 8706416551250959505, guid: a6b6646c590ff7c4eaebd799f4e0cbbd, type: 3}
-  firingPeriod: 0.2
+  firingPeriod: 0.5
   projectileSpawner: {fileID: 927980695}
 --- !u!1 &461000363
 GameObject:
@@ -289,6 +289,7 @@ MonoBehaviour:
   deSpawnedEnemy: 0
   enemySpeed: 0
   enemySpeedIncrease: 0.7
+  enemyIncreaseAfterEachWave: 5
   waveText: {fileID: 615878396}
 --- !u!4 &506528233
 Transform:
