@@ -27,7 +27,10 @@ public class Universal : MonoBehaviour
 
     [Header("UI")]
     public TextMeshProUGUI waveText;
+    public GameObject playerChild;
+    private Player playerScript;
     private int waveNumber = 1;
+    
     void Start()
     {
         outerBoundary.x = innerBoundary.x + boundaryThickness;
@@ -35,12 +38,13 @@ public class Universal : MonoBehaviour
         enemySpeed = 1.0f;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        playerScript = playerChild.GetComponent<Player>();
     }
 
     void Update()
     {
         EnemyWave();
-        waveText.text = "Wave: " + waveNumber;
+        UI();
     }
     void EnemyWave()
     {
@@ -95,5 +99,9 @@ public class Universal : MonoBehaviour
         }
 
             return location;
+    }
+    private void UI()
+    {
+        waveText.text = "Wave: " + waveNumber + ", Health: " + playerScript.GetHealthSystem().GetHealth() + '/' + playerScript.GetHealthSystem().GetMaxHealth();
     }
 }

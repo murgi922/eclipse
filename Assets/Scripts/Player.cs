@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -14,6 +15,11 @@ public class Player : MonoBehaviour
     public float firingPeriod = 1.0f;
     private float elapsedTime = 0.0f;
     public Transform projectileSpawner;
+
+    
+    private HealthSystem healthSystem;
+    private PolygonCollider2D collider2D;
+
     void Start()
     {
         moveAction = InputSystem.actions.FindAction("Move");
@@ -23,6 +29,9 @@ public class Player : MonoBehaviour
         fireAction = InputSystem.actions.FindAction("Attack");
         if (fireAction != null) fireAction.Enable();
         else Debug.LogError("Action Attack could not be found");
+
+        healthSystem = new HealthSystem(100);
+        collider2D = this.GetComponent<PolygonCollider2D>();
     }
     void FixedUpdate()
     {
@@ -31,6 +40,7 @@ public class Player : MonoBehaviour
     private void Update()
     {
         SpawnProjectile();
+        if (!healthSystem.IsAlive()) Destroy(GameObject.FindWithTag("PlayerChild"));
     }
     void RotatePlayer()
     {
@@ -48,5 +58,13 @@ public class Player : MonoBehaviour
                 elapsedTime = 0.0f;
             }
         }
+    }
+    public HealthSystem GetHealthSystem()
+    {
+        return healthSystem;
+    }
+    public void TakeDamage(int damage)
+    {
+        healthSystem.TakeDamage(damage);
     }
 }
