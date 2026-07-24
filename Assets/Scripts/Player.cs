@@ -1,70 +1,103 @@
-using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
-    [Header("Movement")]
-    public float rotSensitivity = 1.0f;
+    [Header("Movement & Rotation Tweaks")]
+    public float rotSensitivity = 100.0f;
     private float xRot = 0.0f;
-    InputAction moveAction;
+    private InputAction moveAction;
 
-    [Header("Projectile")]
+    [Header("Projectile Tweaks")]
     public GameObject projectilePrefab;
-    InputAction fireAction;
-    public float firingPeriod = 1.0f;
+    private InputAction fireAction;
+    public float firingPeriod = 0.2f;
     private float elapsedTime = 0.0f;
     public Transform projectileSpawner;
 
-    
     private HealthSystem healthSystem;
-    private PolygonCollider2D collider2D;
+    public HeartDisplay heartDisplay;
 
     void Start()
     {
+        // Reset time scale to normal speed when the game starts/restarts
+        Time.timeScale = 1.0f;
+
+        healthSystem = new HealthSystem(3);
+
+        if (heartDisplay != null)
+        {
+            heartDisplay.UpdateHearts(healthSystem.GetHealth());
+        }
+
         moveAction = InputSystem.actions.FindAction("Move");
         if (moveAction != null) moveAction.Enable();
-        else Debug.LogError("Action Move could not be found");
 
         fireAction = InputSystem.actions.FindAction("Attack");
         if (fireAction != null) fireAction.Enable();
-        else Debug.LogError("Action Attack could not be found");
-
-        healthSystem = new HealthSystem(100);
-        collider2D = this.GetComponent<PolygonCollider2D>();
     }
+
     void FixedUpdate()
     {
         RotatePlayer();
     }
+
     private void Update()
     {
         SpawnProjectile();
-        if (!healthSystem.IsAlive()) Destroy(GameObject.FindWithTag("PlayerChild"));
     }
+
     void RotatePlayer()
     {
-        xRot -= moveAction.ReadValue<Vector2>().x * rotSensitivity;
-        transform.localRotation = Quaternion.Euler(0f, 0f, xRot);
+        if (moveAction != null)
+        {
+            xRot -= moveAction.ReadValue<Vector2>().x * rotSensitivity * Time.fixedDeltaTime;
+            transform.localRotation = Quaternion.Euler(0f, 0f, xRot);
+        }
     }
+
     void SpawnProjectile()
     {
-        if (elapsedTime <= firingPeriod) elapsedTime += Time.deltaTime;
-        if (fireAction.IsInProgress())
+        elapsedTime += Time.deltaTime;
+
+        if (fireAction != null && fireAction.IsInProgress())
         {
-            if (elapsedTime > firingPeriod)
+            if (elapsedTime >= firingPeriod)
             {
-                Instantiate(projectilePrefab, projectileSpawner.position, Quaternion.identity);
+                Transform spawnPoint = projectileSpawner != null ? projectileSpawner : transform;
+                Instantiate(projectilePrefab, spawnPoint.position, transform.rotation);
                 elapsedTime = 0.0f;
             }
         }
     }
-    public HealthSystem GetHealthSystem()
-    {
-        return healthSystem;
-    }
+
+    public HealthSystem GetHealthSystem() => healthSystem;
+
     public void TakeDamage(int damage)
     {
+        if (healthSystem == null) return;
+
         healthSystem.TakeDamage(damage);
+
+        if (heartDisplay != null)
+        {
+            heartDisplay.UpdateHearts(healthSystem.GetHealth());
+        }
+
+        if (!healthSystem.IsAlive())
+        {
+            GameOver();
+        }
+    }
+
+    private void GameOver()
+    {
+        Debug.Log("Game Over!");
+
+        // PAUSE THE GAME TIME
+        Time.timeScale = 0.0f;
+
+        // Hide the player object
+        gameObject.SetActive(false);
     }
 }
