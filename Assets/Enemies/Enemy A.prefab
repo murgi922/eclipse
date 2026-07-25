@@ -172,6 +172,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   speed: 1
+  timeDelayBetwnDamage: 1
 --- !u!61 &1811794411514783660
 BoxCollider2D:
   m_ObjectHideFlags: 0
