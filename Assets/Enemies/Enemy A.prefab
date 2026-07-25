@@ -154,7 +154,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 245014539527421708}
   m_Father: {fileID: 0}
@@ -173,6 +173,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   speed: 0.8
   timeDelayBetwnDamage: 1
+  polygonSprites:
+  - {fileID: -6184986122619547851, guid: 5723dbe40df58c848b7263cb82305dfa, type: 3}
+  - {fileID: 4693821710284062923, guid: 645a9684f51d07747b7b7412dc6a2b26, type: 3}
+  - {fileID: -5155272471442084791, guid: 689dc6568b176ac46879621c1f436811, type: 3}
+  - {fileID: -1081123977889505410, guid: a5092261afe882f4ea690f50928019f5, type: 3}
+  - {fileID: -8509882600448419351, guid: 0270702d9fe35f94ea3dd6ba4e0c6ad8, type: 3}
+  - {fileID: -4437636619437236943, guid: 60f6f1a2de66d6941a1ef701bbb815f6, type: 3}
+  animDuration: 0.2
+  bounceScale: 1.25
 --- !u!61 &1811794411514783660
 BoxCollider2D:
   m_ObjectHideFlags: 0

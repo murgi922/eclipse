@@ -7,26 +7,28 @@ public class Universal : MonoBehaviour
     public Transform player;
     public GameObject enemyPrefab;
 
-    [Header("Boundaries")]
-    public Vector2 innerBoundary = new Vector2(5, 5);
-    public float boundaryThickness = 3.0f;
+    [Header("Boundaries (Spawn Distance)")]
+    public Vector2 innerBoundary = new Vector2(2.5f, 2.5f);
+    public float boundaryThickness = 1.5f;
     private Vector2 outerBoundary;
 
-    [Header("Enemy Speed Settings")]
-    [Tooltip("Starting speed for enemies in Wave 1. CHANGE THIS IN INSPECTOR TO TWEAK SPEED!")]
-    public float baseEnemySpeed = 1.5f; // Lowered default starting speed
+    [Header("Base Speed Settings")]
+    [Tooltip("Base movement speed for a Triangle (3-sided) enemy")]
+    public float baseTriangleSpeed = 2.5f;
 
-    [Tooltip("How much faster enemies get with each new wave")]
-    public float speedIncreasePerWave = 0.3f;
+    [Tooltip("How much speed enemies lose per extra polygon side (Higher side = Slower)")]
+    public float speedPenaltyPerSide = 0.45f;
+
+    [Tooltip("Minimum movement speed cap so octagons don't freeze completely")]
+    public float minEnemySpeed = 0.5f;
 
     [Header("Wave Timing & Scaling")]
-    public float timeDelay = 1.0f;
+    public float timeDelay = 0.35f;
     public int totalEnemy = 5;
-    public int enemyIncreaseAfterEachWave = 2;
-    public float waveDelay = 3.0f;
+    public int enemyIncreaseAfterEachWave = 3;
+    public float waveDelay = 1.0f;
 
     // Runtime variables
-    [HideInInspector] public float currentWaveSpeed;
     [HideInInspector] public int enemyCount = 0;
     [HideInInspector] public int deSpawnedEnemy = 0;
 
@@ -44,8 +46,7 @@ public class Universal : MonoBehaviour
         outerBoundary.x = innerBoundary.x + boundaryThickness;
         outerBoundary.y = innerBoundary.y + boundaryThickness;
 
-        currentWaveSpeed = baseEnemySpeed;
-        waveDelayTime = waveDelay; // Start Wave 1 immediately
+        waveDelayTime = waveDelay;
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -88,8 +89,7 @@ public class Universal : MonoBehaviour
         enemyCount = 0;
         waveDelayTime = 0.0f;
 
-        // Increase wave speed
-        currentWaveSpeed += speedIncreasePerWave;
+        // Increase total enemies per wave
         totalEnemy += enemyIncreaseAfterEachWave;
     }
 
@@ -103,12 +103,60 @@ public class Universal : MonoBehaviour
 
         GameObject newEnemy = Instantiate(enemy, new Vector3(location.x + player.position.x, location.y + player.position.y, 0), Quaternion.identity);
 
-        // Pass the manager's wave speed directly to the newly spawned enemy instance
         Enemy enemyComponent = newEnemy.GetComponent<Enemy>();
         if (enemyComponent != null)
         {
-            enemyComponent.speed = currentWaveSpeed;
+            // 1. Calculate side count based on wave difficulty progression algorithm
+            int sides = CalculateEnemySides(waveNumber);
+            enemyComponent.SetSides(sides);
+
+            // 2. Inverse Speed Algorithm: Higher polygon sides = Slower movement speed
+            // Formula: BaseSpeed - ((Sides - 3) * Penalty) + Slight Wave Acceleration
+            float waveSpeedBonus = (waveNumber - 1) * 0.08f;
+            float calculatedSpeed = baseTriangleSpeed - ((sides - 3) * speedPenaltyPerSide) + waveSpeedBonus;
+
+            // Enforce minimum speed limit
+            enemyComponent.speed = Mathf.Max(calculatedSpeed, minEnemySpeed);
         }
+    }
+
+    /// <summary>
+    /// Weighted Random Pool Algorithm for selecting Polygon Side counts.
+    /// Unlocks higher shapes as waves progress and ramps up their spawn chances.
+    /// </summary>
+    private int CalculateEnemySides(int wave)
+    {
+        // Unlocks a new higher polygon shape every 2 waves (Cap at 8 = Octagon)
+        int maxUnlockedSides = Mathf.Min(3 + (wave / 2), 8);
+
+        // Calculate probability weights for shapes 3 through maxUnlockedSides
+        float[] weights = new float[maxUnlockedSides - 2];
+        float totalWeight = 0f;
+
+        for (int i = 0; i < weights.Length; i++)
+        {
+            int sideCount = i + 3; // 3 = Triangle, 4 = Square, etc.
+
+            // Weight formula: Higher shapes get higher spawn probability as wave numbers rise
+            float weight = Mathf.Pow(wave, (sideCount - 3) * 0.4f);
+            weights[i] = weight;
+            totalWeight += weight;
+        }
+
+        // Weighted Random Pick
+        float randomValue = Random.Range(0f, totalWeight);
+        float cumulativeWeight = 0f;
+
+        for (int i = 0; i < weights.Length; i++)
+        {
+            cumulativeWeight += weights[i];
+            if (randomValue <= cumulativeWeight)
+            {
+                return i + 3; // Returns side count (3 to 8)
+            }
+        }
+
+        return 3; // Fallback to Triangle
     }
 
     Vector2 RandomNumber(Vector2 innerBoundary, Vector2 outerBoundary)

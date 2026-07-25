@@ -79,6 +79,7 @@ public class Player : MonoBehaviour
 
         healthSystem.TakeDamage(damage);
 
+        // Trigger the animation in HeartDisplay
         if (heartDisplay != null)
         {
             heartDisplay.UpdateHearts(healthSystem.GetHealth());
@@ -86,18 +87,15 @@ public class Player : MonoBehaviour
 
         if (!healthSystem.IsAlive())
         {
-            GameOver();
+            // Short delay so the final heart blink plays out fully
+            Invoke(nameof(GameOver), 0.45f);
         }
     }
 
     private void GameOver()
     {
         Debug.Log("Game Over!");
-
-        // PAUSE THE GAME TIME
         Time.timeScale = 0.0f;
-
-        // Hide the player object
         gameObject.SetActive(false);
     }
 }
