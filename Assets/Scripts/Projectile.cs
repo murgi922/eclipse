@@ -23,9 +23,14 @@ public class Projectile : MonoBehaviour
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        Destroy(collision.gameObject);
-        universalScript.enemyCount--;
-        universalScript.deSpawnedEnemy++;
+        collision.gameObject.GetComponent<Enemy>().GetHealthSystem().TakeDamage(1);
+        int enemyindex;
+        enemyindex = collision.gameObject.GetComponent<Enemy>().GetEnemyIndex();
+        enemyindex--;
+        collision.gameObject.GetComponent<Enemy>().changeSprite(enemyindex);
+        collision.gameObject.GetComponent <Enemy>().EnemyIndexSet(enemyindex);
+        
+        collision.gameObject.GetComponent<Enemy>().EnemyIndexSet(enemyindex--);
         Destroy(this.gameObject);
     }
 }

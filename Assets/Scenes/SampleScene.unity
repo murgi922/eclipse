@@ -357,6 +357,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c1fc899755954a499ab2b206026d10a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Universal
+  enemies:
+  - {fileID: -6184986122619547851, guid: 5723dbe40df58c848b7263cb82305dfa, type: 3}
+  - {fileID: 4693821710284062923, guid: 645a9684f51d07747b7b7412dc6a2b26, type: 3}
+  - {fileID: -5155272471442084791, guid: 689dc6568b176ac46879621c1f436811, type: 3}
+  - {fileID: -1081123977889505410, guid: a5092261afe882f4ea690f50928019f5, type: 3}
+  - {fileID: -8509882600448419351, guid: 0270702d9fe35f94ea3dd6ba4e0c6ad8, type: 3}
+  - {fileID: -4437636619437236943, guid: 60f6f1a2de66d6941a1ef701bbb815f6, type: 3}
   player: {fileID: 1864487062}
   enemyPrefab: {fileID: 4984979316230771978, guid: 2f4f14cb7c3ec754d9ced9a1e69d1afd, type: 3}
   innerBoundary: {x: 14.5, y: 6.2}

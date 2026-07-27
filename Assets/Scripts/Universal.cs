@@ -5,6 +5,9 @@ using UnityEngine;
 public class Universal : MonoBehaviour
 {
     [Header("Enemy Control")]
+    public Sprite[] enemies;
+    private int enemyIndex = 2;
+    GameObject tempEnemy;
     public Transform player;
     public GameObject enemyPrefab;
     public Vector2 innerBoundary;
@@ -80,7 +83,10 @@ public class Universal : MonoBehaviour
         innerBoundary = new Vector2(Mathf.Abs(innerBoundary.x), Mathf.Abs(innerBoundary.y));
         outerBoundary = new Vector2(Mathf.Abs(outerBoundary.x), Mathf.Abs(outerBoundary.y));
         Vector2 location = RandomNumber(innerBoundary, outerBoundary);
-        Instantiate(enemy, new Vector3(location.x + player.position.x, location.y + player.position.y, 0), Quaternion.identity);
+        tempEnemy = Instantiate(enemy, new Vector3(location.x + player.position.x, location.y + player.position.y, 0), Quaternion.identity);
+        tempEnemy.GetComponent<SpriteRenderer>().sprite = enemies[enemyIndex];
+        tempEnemy.GetComponent<Enemy>().EnemyIndexSet(enemyIndex);
+        tempEnemy.GetComponent<Enemy>().GetComponent<Enemy>().SetEnemyTypes(enemies);
     }
     Vector2 RandomNumber(Vector2 innerBoundary, Vector2 outerBoundary)
     {
@@ -105,3 +111,6 @@ public class Universal : MonoBehaviour
         waveText.text = "Wave: " + waveNumber + ", Health: " + playerScript.GetHealthSystem().GetHealth() + '/' + playerScript.GetHealthSystem().GetMaxHealth();
     }
 }
+
+
+
