@@ -28,8 +28,6 @@ public class Projectile : MonoBehaviour
         enemyindex = collision.gameObject.GetComponent<Enemy>().GetEnemyIndex();
         enemyindex--;
         collision.gameObject.GetComponent<Enemy>().changeSprite(enemyindex);
-        collision.gameObject.GetComponent <Enemy>().EnemyIndexSet(enemyindex);
-        
         collision.gameObject.GetComponent<Enemy>().EnemyIndexSet(enemyindex--);
         Destroy(this.gameObject);
     }

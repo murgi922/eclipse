@@ -3,7 +3,7 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     private Transform player;
-    public float speed = 10f;
+    [SerializeField] private float speed = 10f;
     private Universal universalScript;
     GameObject playerObject;
     Player playerScript;
@@ -29,12 +29,13 @@ public class Enemy : MonoBehaviour
         GameObject universalObject = GameObject.FindWithTag("Universal");
         universalScript = universalObject.GetComponent<Universal>();
         healthSystem = new HealthSystem(enemyIndex + 1);
-}
+    }
 
     void Update()
     {
         transform.position = Vector3.MoveTowards(transform.position, player.position, speed * Time.deltaTime);
         speed = universalScript.enemySpeed;
+        speed /= healthSystem.GetHealth();
         if (!healthSystem.IsAlive())
         {
             universalScript.enemyCount--;
@@ -47,6 +48,7 @@ public class Enemy : MonoBehaviour
         if (collision.CompareTag("PlayerChild"))
         {
             playerScript.TakeDamage(10);
+            TakeDamageSelf();
         }
     }
     private void OnTriggerStay2D(Collider2D collision)
@@ -58,6 +60,7 @@ public class Enemy : MonoBehaviour
             {
                 playerScript.TakeDamage(10);
                 elapsedTime = 0.0f;
+                TakeDamageSelf();
             }
         }
         
@@ -83,5 +86,12 @@ public class Enemy : MonoBehaviour
     public void SetEnemyTypes(Sprite[] enemies)
     {
         this.enemies = enemies;
+    }
+    private void TakeDamageSelf()
+    {
+        healthSystem.TakeDamage(1);
+        enemyIndex--;
+        changeSprite(enemyIndex);
+
     }
 }
