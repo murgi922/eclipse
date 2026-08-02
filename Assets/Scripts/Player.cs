@@ -5,7 +5,8 @@ using UnityEngine.InputSystem;
 public class Player : MonoBehaviour
 {
     [Header("Movement")]
-    public float rotSensitivity = 1.0f;
+    [SerializeField] private float rotSensitivity = 5f;
+    [SerializeField] private float rotSnappiness = 10f;
     private float xRot = 0.0f;
     InputAction moveAction;
 
@@ -45,7 +46,8 @@ public class Player : MonoBehaviour
     void RotatePlayer()
     {
         xRot -= moveAction.ReadValue<Vector2>().x * rotSensitivity;
-        transform.localRotation = Quaternion.Euler(0f, 0f, xRot);
+        Quaternion targetRot = Quaternion.Euler(0f, 0f, xRot);
+        transform.localRotation = Quaternion.Slerp(transform.localRotation, targetRot, Time.fixedDeltaTime * rotSnappiness);
     }
     void SpawnProjectile()
     {
