@@ -107,7 +107,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e3b440452bf929419431c3924451449, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Projectile
-  projectileSpeed: 1
+  projectileSpeed: 1.3
 --- !u!58 &-5211960779920869327
 CircleCollider2D:
   m_ObjectHideFlags: 0
